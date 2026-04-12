@@ -603,29 +603,79 @@
     <div class="info-card">
       <h3>🥋 Willkommen im Dojo Podcast!</h3>
       <p>Hier findet ihr alle Podcast-Folgen nach dem Training. Die Folgen sind exklusiv für Kursteilnehmer und ihre Eltern.</p>
-    </div>  
+    </div>
+
+    <div class="info-card">
+      <h3>🔑 Zugangscodes</h3>
+      <ul>
+        <li><strong style="color: var(--text);">Eltern-Code:</strong> <code style="color: var(--gold); background: #111; padding: 2px 8px; border-radius: 4px;">ELTERN2026</code></li>
+        <li><strong style="color: var(--text);">Trainer-Code:</strong> <code style="color: var(--gold); background: #111; padding: 2px 8px; border-radius: 4px;">TAKEDAMAUS36</code></li>
+      </ul>
+      <p style="margin-top: 10px;">⚠️ Ändere die Codes direkt im HTML-Code der App (Zeile mit <code style="color: var(--gold);">PASSWORDS</code>).</p>
+    </div>
+
+    <div class="info-card">
+      <h3>🛠️ Für den Trainer</h3>
+      <ul>
+        <li>Mit dem Trainer-Code einloggen für Verwaltung</li>
+        <li>Neue Folgen unter "Neue Folge" hinzufügen</li>
+        <li>Folgen unter "Verwalten" löschen</li>
+        <li>Episoden werden im Browser gespeichert (localStorage)</li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h3>📱 App auf Handy speichern</h3>
+      <p>Im Browser auf "Teilen" → "Zum Startbildschirm" tippen — dann sieht es aus wie eine echte App!</p>
+    </div>
+  </div>
+</div>
 
 <script>
 // ════════════════════════════════════════
 //   KONFIGURATION — hier anpassen!
 // ════════════════════════════════════════
 const PASSWORDS = {
-  "ELTERN2026":  "eltern",
+  "ELTERN2026":   "eltern",
   "TAKEDAMAUS36": "trainer"
   // Füge hier weitere Codes hinzu:
   // "MEINCODE123": "eltern",
 };
 
-// Beispiel-Episoden (werden beim ersten Start geladen)
-const DEMO_EPISODES = [
+// ════════════════════════════════════════
+//   FOLGEN — hier neue Folgen eintragen!
+//   Dateinamen exakt so wie auf GitHub.
+// ════════════════════════════════════════
+const ALLE_FOLGEN = [
   {
     id: 1,
-    title: "Folge 1 – Respekt im Dojo",
-    desc: "Heute sprechen wir darüber, warum Respekt die wichtigste Regel im Kampfsport ist.",
-    date: "2024-01-15",
-    url: "", // Hier MP3-URL eintragen
-    isNew: true
+    title: "Takeda Maus – Kendo 1",
+    desc: "",
+    date: "2026-04-12",
+    url: "Takeda Maus Kendo 1.m4a"
+  },
+  {
+    id: 2,
+    title: "Takeda Maus Aikido 1",
+    desc: "",
+    date: "2026-04-12",
+    url: "Takeda Maus Aikido 1.mp3"
+  },
+  {
+    id: 3,
+    title: "Takeda Maus Aikido 2",
+    desc: "",
+    date: "2026-04-12",
+    url: "Takeda Maus Aikido 2.mp3"
   }
+  // Neue Folge hinzufügen:
+  // ,{
+  //   id: 4,
+  //   title: "Takeda Maus Kendo 2",
+  //   desc: "",
+  //   date: "2026-04-19",
+  //   url: "Takeda Maus Kendo 2.mp3"
+  // }
 ];
 
 // ════════════════════════════════════════
@@ -635,15 +685,13 @@ let currentRole = null;
 let currentAudioId = null;
 let audioFile = null;
 
+// Folgen kommen immer aus dem Code — für alle sichtbar!
 function getEpisodes() {
-  const stored = localStorage.getItem('dojo_episodes');
-  if (stored) return JSON.parse(stored);
-  localStorage.setItem('dojo_episodes', JSON.stringify(DEMO_EPISODES));
-  return DEMO_EPISODES;
+  return ALLE_FOLGEN;
 }
 
 function saveEpisodes(eps) {
-  localStorage.setItem('dojo_episodes', JSON.stringify(eps));
+  // Nicht mehr nötig — Folgen stehen fest im Code
 }
 
 function doLogin() {
