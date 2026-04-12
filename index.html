@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kampfsport Podcast</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E8293A;
+    --dark: #0f0f0f;
+    --card: #1a1a1a;
+    --card2: #222;
+    --gold: #F5C842;
+    --text: #f0f0f0;
+    --muted: #888;
+    --radius: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── LOGIN ── */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+    background: radial-gradient(ellipse at top, #2a0a0a 0%, var(--dark) 60%);
+    position: relative;
+  }
+  .dojo-belt {
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, var(--red) 0%, var(--gold) 50%, var(--red) 100%);
+    position: fixed;
+    top: 0; left: 0;
+    z-index: 100;
+  }
+  .logo-wrap { text-align: center; margin-bottom: 2.5rem; }
+  .logo-icon {
+    font-size: 64px;
+    line-height: 1;
+    filter: drop-shadow(0 0 24px rgba(232,41,58,0.5));
+    animation: pulse-logo 3s ease-in-out infinite;
+  }
+  @keyframes pulse-logo {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+  }
+  .logo-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 3.2rem;
+    letter-spacing: 3px;
+    color: var(--text);
+    line-height: 1;
+    margin-top: 8px;
+  }
+  .logo-sub {
+    font-size: 0.85rem;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .login-card {
+    background: var(--card);
+    border: 1px solid #2e2e2e;
+    border-radius: var(--radius);
+    padding: 2rem 1.75rem;
+    width: 100%;
+    max-width: 380px;
+  }
+  .login-card h2 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    margin-bottom: 1.25rem;
+    color: var(--text);
+  }
+  .field-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .field-wrap { margin-bottom: 1.25rem; position: relative; }
+  .field-wrap input {
+    width: 100%;
+    background: #111;
+    border: 1.5px solid #2e2e2e;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 1rem;
+    font-family: 'Nunito', sans-serif;
+    color: var(--text);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .field-wrap input:focus { border-color: var(--red); }
+  .field-wrap input.shake { animation: shake .4s; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20%,60% { transform: translateX(-8px); }
+    40%,80% { transform: translateX(8px); }
+  }
+  .btn-primary {
+    width: 100%;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 15px;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: transform .15s, background .2s;
+  }
+  .btn-primary:hover { background: #c0202f; transform: translateY(-2px); }
+  .btn-primary:active { transform: scale(.97); }
+  .login-hint {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 1rem;
+  }
+  .error-msg {
+    background: rgba(232,41,58,.15);
+    border: 1px solid rgba(232,41,58,.4);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    color: #f87a84;
+    margin-bottom: 1rem;
+    display: none;
+  }
+
+  /* ── MAIN APP ── */
+  #app-screen { display: none; min-height: 100vh; }
+
+  /* Header */
+  .app-header {
+    background: var(--card);
+    border-bottom: 1px solid #2a2a2a;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .header-left { display: flex; align-items: center; gap: 10px; }
+  .header-logo { font-size: 1.5rem; }
+  .header-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+  }
+  .badge-role {
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(232,41,58,.2);
+    color: var(--red);
+    border: 1px solid rgba(232,41,58,.4);
+  }
+  .badge-role.trainer { background: rgba(245,200,66,.15); color: var(--gold); border-color: rgba(245,200,66,.4); }
+  .logout-btn {
+    background: none;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 6px 12px;
+    color: var(--muted);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: color .2s, border-color .2s;
+  }
+  .logout-btn:hover { color: var(--text); border-color: #555; }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid #2a2a2a;
+    background: var(--card);
+  }
+  .tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 14px 8px;
+    color: var(--muted);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color .2s, border-color .2s;
+    letter-spacing: 0.5px;
+  }
+  .tab-btn.active { color: var(--red); border-bottom-color: var(--red); }
+  .tab-btn:hover:not(.active) { color: var(--text); }
+
+  /* Content area */
+  .tab-content { display: none; padding: 1.25rem; max-width: 680px; margin: 0 auto; }
+  .tab-content.active { display: block; }
+
+  /* Section title */
+  .section-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title span { font-size: 1.1rem; }
+
+  /* Now Playing Banner */
+  #now-playing {
+    background: linear-gradient(135deg, #1e0a0b, #2a1010);
+    border: 1px solid rgba(232,41,58,.3);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    display: none;
+  }
+  #now-playing.active { display: block; }
+  .np-label {
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 6px;
+  }
+  .np-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  audio#main-player { width: 100%; height: 40px; accent-color: var(--red); }
+  audio#main-player::-webkit-media-controls-panel { background: #1a1a1a; }
+
+  /* Episode Cards */
+  .ep-card {
+    background: var(--card);
+    border: 1px solid #2a2a2a;
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: border-color .2s, transform .15s;
+    cursor: pointer;
+  }
+  .ep-card:hover { border-color: #444; transform: translateX(3px); }
+  .ep-card.playing { border-color: var(--red); background: #1e0a0b; }
+  .ep-num {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.6rem;
+    color: var(--red);
+    min-width: 36px;
+    text-align: center;
+    line-height: 1;
+  }
+  .ep-info { flex: 1; min-width: 0; }
+  .ep-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ep-meta { font-size: 0.75rem; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; }
+  .badge-new {
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: rgba(245,200,66,.15);
+    color: var(--gold);
+    border: 1px solid rgba(245,200,66,.4);
+  }
+  .play-icon {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--red);
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: transform .15s, background .2s;
+  }
+  .play-icon:hover { transform: scale(1.1); background: #c0202f; }
+  .play-icon.paused { background: #333; }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+  }
+  .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .empty-state p { font-size: 0.9rem; }
+
+  /* UPLOAD Tab */
+  .upload-card {
+    background: var(--card);
+    border: 1px solid #2a2a2a;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .upload-card h3 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+  .form-field { margin-bottom: 1rem; }
+  .form-field label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .form-field input[type="text"],
+  .form-field input[type="date"],
+  .form-field select,
+  .form-field textarea {
+    width: 100%;
+    background: #111;
+    border: 1.5px solid #2e2e2e;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 0.9rem;
+    font-family: 'Nunito', sans-serif;
+    color: var(--text);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .form-field textarea { min-height: 80px; resize: vertical; }
+  .form-field input:focus,
+  .form-field select:focus,
+  .form-field textarea:focus { border-color: var(--red); }
+  .form-field select option { background: #1a1a1a; }
+
+  .file-drop {
+    border: 2px dashed #333;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+  }
+  .file-drop:hover, .file-drop.dragover { border-color: var(--red); background: rgba(232,41,58,.05); }
+  .file-drop .drop-icon { font-size: 2rem; margin-bottom: 8px; }
+  .file-drop p { font-size: 0.85rem; color: var(--muted); }
+  .file-drop .file-name { color: var(--gold); font-weight: 700; font-size: 0.9rem; margin-top: 6px; }
+  #file-input { display: none; }
+
+  .btn-upload {
+    width: 100%;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: transform .15s, background .2s;
+    margin-top: 0.5rem;
+  }
+  .btn-upload:hover { background: #c0202f; transform: translateY(-2px); }
+  .btn-upload:disabled { background: #333; color: var(--muted); cursor: not-allowed; transform: none; }
+
+  .success-toast {
+    background: rgba(34,197,94,.15);
+    border: 1px solid rgba(34,197,94,.4);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    color: #4ade80;
+    margin-top: 1rem;
+    display: none;
+    animation: fadeIn .3s;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Manage tab */
+  .manage-ep-card {
+    background: var(--card);
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .manage-ep-card .ep-num { font-size: 1.3rem; min-width: 28px; }
+  .manage-ep-card .ep-info { flex: 1; }
+  .delete-btn {
+    background: none;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 6px 10px;
+    color: var(--muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: color .2s, border-color .2s;
+  }
+  .delete-btn:hover { color: var(--red); border-color: var(--red); }
+
+  /* Info tab */
+  .info-card {
+    background: var(--card);
+    border: 1px solid #2a2a2a;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .info-card h3 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.2rem;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.75rem;
+    color: var(--gold);
+  }
+  .info-card p, .info-card li {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .info-card ul { padding-left: 1.25rem; }
+  .info-card li { margin-bottom: 4px; }
+  .code-block {
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: var(--gold);
+    margin-top: 8px;
+    word-break: break-all;
+  }
+
+  /* Mobile bottom padding */
+  .tab-content { padding-bottom: 2rem; }
+
+  @media (max-width: 480px) {
+    .logo-title { font-size: 2.4rem; }
+    .ep-title { font-size: 0.9rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="dojo-belt"></div>
+
+<!-- ═══════════════════════════════ LOGIN ═══════════════════════════════ -->
+<div id="login-screen">
+  <div class="logo-wrap">
+    <div class="logo-icon">🥋</div>
+    <div class="logo-title">Dojo Podcast</div>
+    <div class="logo-sub">Kampfsport für Kinder</div>
+  </div>
+
+  <div class="login-card">
+    <h2>Einloggen</h2>
+    <div class="error-msg" id="error-msg">Falscher Zugangscode. Bitte nochmal versuchen!</div>
+
+    <div class="field-wrap">
+      <label class="field-label">Zugangscode</label>
+      <input type="password" id="code-input" placeholder="z.B. DOJO2024" autocomplete="off" />
+    </div>
+
+    <button class="btn-primary" onclick="doLogin()">🥊 Einloggen</button>
+    <p class="login-hint">Den Zugangscode erhaltet ihr vom Trainer nach dem Training.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ APP ═══════════════════════════════ -->
+<div id="app-screen">
+  <div class="app-header">
+    <div class="header-left">
+      <span class="header-logo">🥋</span>
+      <span class="header-title">Dojo Podcast</span>
+      <span class="badge-role" id="role-badge">Eltern</span>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">Abmelden</button>
+  </div>
+
+  <!-- Tabs — Eltern sehen nur "Folgen" und "Info" -->
+  <div class="tabs" id="tab-bar">
+    <button class="tab-btn active" onclick="showTab('folgen', this)">🎙️ Folgen</button>
+    <button class="tab-btn" onclick="showTab('info', this)">ℹ️ Info</button>
+    <!-- Trainer-Tabs werden per JS eingefügt -->
+  </div>
+
+  <!-- TAB: Folgen -->
+  <div class="tab-content active" id="tab-folgen">
+    <div id="now-playing">
+      <div class="np-label">▶ Jetzt läuft</div>
+      <div class="np-title" id="np-title">—</div>
+      <audio id="main-player" controls></audio>
+    </div>
+
+    <div class="section-title"><span>🎙️</span> Alle Folgen</div>
+    <div id="episode-list"></div>
+  </div>
+
+  <!-- TAB: Upload (nur Trainer) -->
+  <div class="tab-content" id="tab-upload">
+    <div class="section-title"><span>📤</span> Neue Folge</div>
+    <div class="upload-card">
+      <h3>Folge hochladen</h3>
+
+      <div class="form-field">
+        <label>Titel der Folge</label>
+        <input type="text" id="ep-title-input" placeholder="z.B. Folge 12 – Respekt im Dojo" />
+      </div>
+
+      <div class="form-field">
+        <label>Thema / Beschreibung (optional)</label>
+        <textarea id="ep-desc-input" placeholder="Worum geht es in dieser Folge?"></textarea>
+      </div>
+
+      <div class="form-field">
+        <label>Datum</label>
+        <input type="date" id="ep-date-input" />
+      </div>
+
+      <div class="form-field">
+        <label>Audio-Datei (MP3)</label>
+        <div class="file-drop" id="file-drop" onclick="document.getElementById('file-input').click()">
+          <div class="drop-icon">🎵</div>
+          <p>Hier klicken oder MP3 reinziehen</p>
+          <p class="file-name" id="file-name-display"></p>
+        </div>
+        <input type="file" id="file-input" accept="audio/*" />
+      </div>
+
+      <button class="btn-upload" id="upload-btn" onclick="addEpisode()" disabled>
+        ✅ Folge veröffentlichen
+      </button>
+      <div class="success-toast" id="success-toast">✅ Folge wurde hinzugefügt!</div>
+    </div>
+
+    <div class="info-card" style="border-color: rgba(245,200,66,.3);">
+      <h3>📌 Wichtig: Audio-Dateien</h3>
+      <p>Da diese App auf GitHub Pages läuft, kannst du Audiodateien nicht direkt hochladen. Stattdessen:</p>
+      <ul style="margin-top: 8px;">
+        <li>Lade die MP3-Datei ins GitHub Repository hoch</li>
+        <li>Trage hier den Link zur Datei ein (z.B. <code style="color: var(--gold);">audio/folge12.mp3</code>)</li>
+        <li>Oder nutze einen kostenlosen Dienst wie <strong>Google Drive</strong> (direkter Link) oder <strong>Dropbox</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TAB: Verwalten (nur Trainer) -->
+  <div class="tab-content" id="tab-manage">
+    <div class="section-title"><span>⚙️</span> Folgen verwalten</div>
+    <div id="manage-list"></div>
+  </div>
+
+  <!-- TAB: Info -->
+  <div class="tab-content" id="tab-info">
+    <div class="section-title"><span>ℹ️</span> Info</div>
+
+    <div class="info-card">
+      <h3>🥋 Willkommen im Dojo Podcast!</h3>
+      <p>Hier findet ihr alle Podcast-Folgen nach dem Training. Die Folgen sind exklusiv für Kursteilnehmer und ihre Eltern.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>🔑 Zugangscodes</h3>
+      <ul>
+        <li><strong style="color: var(--text);">Eltern-Code:</strong> <code style="color: var(--gold); background: #111; padding: 2px 8px; border-radius: 4px;">ELTERN2024</code></li>
+        <li><strong style="color: var(--text);">Trainer-Code:</strong> <code style="color: var(--gold); background: #111; padding: 2px 8px; border-radius: 4px;">TRAINER2024</code></li>
+      </ul>
+      <p style="margin-top: 10px;">⚠️ Ändere die Codes direkt im HTML-Code der App (Zeile mit <code style="color: var(--gold);">PASSWORDS</code>).</p>
+    </div>
+
+    <div class="info-card">
+      <h3>🛠️ Für den Trainer</h3>
+      <ul>
+        <li>Mit dem Trainer-Code einloggen für Verwaltung</li>
+        <li>Neue Folgen unter "Neue Folge" hinzufügen</li>
+        <li>Folgen unter "Verwalten" löschen</li>
+        <li>Episoden werden im Browser gespeichert (localStorage)</li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h3>📱 App auf Handy speichern</h3>
+      <p>Im Browser auf "Teilen" → "Zum Startbildschirm" tippen — dann sieht es aus wie eine echte App!</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════
+//   KONFIGURATION — hier anpassen!
+// ════════════════════════════════════════
+const PASSWORDS = {
+  "ELTERN2024":  "eltern",
+  "TRAINER2024": "trainer"
+  // Füge hier weitere Codes hinzu:
+  // "MEINCODE123": "eltern",
+};
+
+// Beispiel-Episoden (werden beim ersten Start geladen)
+const DEMO_EPISODES = [
+  {
+    id: 1,
+    title: "Folge 1 – Respekt im Dojo",
+    desc: "Heute sprechen wir darüber, warum Respekt die wichtigste Regel im Kampfsport ist.",
+    date: "2024-01-15",
+    url: "", // Hier MP3-URL eintragen
+    isNew: true
+  }
+];
+
+// ════════════════════════════════════════
+//   APP-LOGIK
+// ════════════════════════════════════════
+let currentRole = null;
+let currentAudioId = null;
+let audioFile = null;
+
+function getEpisodes() {
+  const stored = localStorage.getItem('dojo_episodes');
+  if (stored) return JSON.parse(stored);
+  localStorage.setItem('dojo_episodes', JSON.stringify(DEMO_EPISODES));
+  return DEMO_EPISODES;
+}
+
+function saveEpisodes(eps) {
+  localStorage.setItem('dojo_episodes', JSON.stringify(eps));
+}
+
+function doLogin() {
+  const code = document.getElementById('code-input').value.trim().toUpperCase();
+  const role = PASSWORDS[code];
+  if (!role) {
+    document.getElementById('error-msg').style.display = 'block';
+    const inp = document.getElementById('code-input');
+    inp.classList.add('shake');
+    setTimeout(() => inp.classList.remove('shake'), 500);
+    return;
+  }
+  currentRole = role;
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display = 'block';
+
+  const badge = document.getElementById('role-badge');
+  if (role === 'trainer') {
+    badge.textContent = 'Trainer';
+    badge.classList.add('trainer');
+    addTrainerTabs();
+  } else {
+    badge.textContent = 'Eltern';
+  }
+
+  renderEpisodes();
+  // Set today's date in date input
+  document.getElementById('ep-date-input').value = new Date().toISOString().split('T')[0];
+}
+
+document.getElementById('code-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+function doLogout() {
+  currentRole = null;
+  currentAudioId = null;
+  document.getElementById('main-player').pause();
+  document.getElementById('now-playing').classList.remove('active');
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app-screen').style.display = 'none';
+  document.getElementById('code-input').value = '';
+  document.getElementById('error-msg').style.display = 'none';
+  // Remove trainer tabs if present
+  const extraTabs = document.querySelectorAll('.trainer-tab');
+  extraTabs.forEach(t => t.remove());
+  // Reset tabs
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelector('.tab-btn').classList.add('active');
+  document.getElementById('tab-folgen').classList.add('active');
+}
+
+function addTrainerTabs() {
+  const bar = document.getElementById('tab-bar');
+  const t1 = document.createElement('button');
+  t1.className = 'tab-btn trainer-tab';
+  t1.textContent = '📤 Neue Folge';
+  t1.onclick = () => { showTab('upload', t1); };
+  const t2 = document.createElement('button');
+  t2.className = 'tab-btn trainer-tab';
+  t2.textContent = '⚙️ Verwalten';
+  t2.onclick = () => { showTab('manage', t2); renderManage(); };
+  bar.appendChild(t1);
+  bar.appendChild(t2);
+}
+
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'manage') renderManage();
+}
+
+function renderEpisodes() {
+  const eps = getEpisodes();
+  const list = document.getElementById('episode-list');
+  if (eps.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="icon">🎙️</div><p>Noch keine Folgen vorhanden.<br>Der Trainer wird bald die erste Folge hochladen!</p></div>`;
+    return;
+  }
+  // Sort newest first
+  const sorted = [...eps].sort((a, b) => b.id - a.id);
+  list.innerHTML = sorted.map((ep, i) => `
+    <div class="ep-card ${currentAudioId === ep.id ? 'playing' : ''}" id="epcard-${ep.id}" onclick="playEp(${ep.id})">
+      <div class="ep-num">#${ep.id}</div>
+      <div class="ep-info">
+        <div class="ep-title">${ep.title}</div>
+        <div class="ep-meta">
+          <span>${formatDate(ep.date)}</span>
+          ${ep.desc ? `<span>· ${ep.desc.substring(0,50)}${ep.desc.length>50?'…':''}</span>` : ''}
+          ${i === 0 ? '<span class="badge-new">Neu</span>' : ''}
+        </div>
+      </div>
+      <button class="play-icon ${currentAudioId === ep.id ? '' : 'paused'}" id="playbtn-${ep.id}">
+        ${currentAudioId === ep.id ? '⏸' : '▶'}
+      </button>
+    </div>
+  `).join('');
+}
+
+function playEp(id) {
+  const eps = getEpisodes();
+  const ep = eps.find(e => e.id === id);
+  if (!ep) return;
+
+  const player = document.getElementById('main-player');
+  const np = document.getElementById('now-playing');
+
+  if (currentAudioId === id) {
+    if (player.paused) { player.play(); }
+    else { player.pause(); }
+    return;
+  }
+
+  currentAudioId = id;
+  document.getElementById('np-title').textContent = ep.title;
+
+  if (ep.url && ep.url.trim() !== '') {
+    player.src = ep.url;
+    player.play().catch(() => {});
+  } else {
+    player.src = '';
+    document.getElementById('np-title').textContent = ep.title + ' (kein Audio-Link eingetragen)';
+  }
+
+  np.classList.add('active');
+  renderEpisodes();
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  try {
+    return new Date(d).toLocaleDateString('de-AT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  } catch { return d; }
+}
+
+// ── File upload handling ──
+document.getElementById('file-input').addEventListener('change', function() {
+  const f = this.files[0];
+  if (f) {
+    audioFile = f;
+    document.getElementById('file-name-display').textContent = '✅ ' + f.name;
+    checkUploadReady();
+  }
+});
+
+const fileDrop = document.getElementById('file-drop');
+fileDrop.addEventListener('dragover', e => { e.preventDefault(); fileDrop.classList.add('dragover'); });
+fileDrop.addEventListener('dragleave', () => fileDrop.classList.remove('dragover'));
+fileDrop.addEventListener('drop', e => {
+  e.preventDefault();
+  fileDrop.classList.remove('dragover');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type.startsWith('audio/')) {
+    audioFile = f;
+    document.getElementById('file-name-display').textContent = '✅ ' + f.name;
+    document.getElementById('file-input').files = e.dataTransfer.files;
+    checkUploadReady();
+  }
+});
+
+document.getElementById('ep-title-input').addEventListener('input', checkUploadReady);
+
+function checkUploadReady() {
+  const title = document.getElementById('ep-title-input').value.trim();
+  document.getElementById('upload-btn').disabled = !(title && audioFile);
+}
+
+function addEpisode() {
+  const title = document.getElementById('ep-title-input').value.trim();
+  const desc = document.getElementById('ep-desc-input').value.trim();
+  const date = document.getElementById('ep-date-input').value;
+
+  if (!title) return;
+
+  const eps = getEpisodes();
+  const newId = eps.length > 0 ? Math.max(...eps.map(e => e.id)) + 1 : 1;
+
+  // Create local object URL for the audio file (works in current session)
+  let audioUrl = '';
+  if (audioFile) {
+    audioUrl = URL.createObjectURL(audioFile);
+  }
+
+  eps.push({ id: newId, title, desc, date, url: audioUrl, isNew: true });
+  saveEpisodes(eps);
+
+  // Reset form
+  document.getElementById('ep-title-input').value = '';
+  document.getElementById('ep-desc-input').value = '';
+  document.getElementById('ep-date-input').value = new Date().toISOString().split('T')[0];
+  document.getElementById('file-name-display').textContent = '';
+  audioFile = null;
+  document.getElementById('upload-btn').disabled = true;
+
+  const toast = document.getElementById('success-toast');
+  toast.style.display = 'block';
+  setTimeout(() => { toast.style.display = 'none'; }, 3000);
+
+  renderEpisodes();
+}
+
+function renderManage() {
+  const eps = getEpisodes();
+  const list = document.getElementById('manage-list');
+  if (eps.length === 0) {
+    list.innerHTML = '<p style="color: var(--muted); font-size: .9rem;">Noch keine Folgen vorhanden.</p>';
+    return;
+  }
+  const sorted = [...eps].sort((a, b) => b.id - a.id);
+  list.innerHTML = sorted.map(ep => `
+    <div class="manage-ep-card">
+      <div class="ep-num">#${ep.id}</div>
+      <div class="ep-info">
+        <div style="font-weight: 700; font-size: .9rem; color: var(--text);">${ep.title}</div>
+        <div style="font-size: .75rem; color: var(--muted);">${formatDate(ep.date)}</div>
+      </div>
+      <button class="delete-btn" onclick="deleteEp(${ep.id})">🗑 Löschen</button>
+    </div>
+  `).join('');
+}
+
+function deleteEp(id) {
+  if (!confirm('Folge wirklich löschen?')) return;
+  let eps = getEpisodes().filter(e => e.id !== id);
+  saveEpisodes(eps);
+  if (currentAudioId === id) {
+    document.getElementById('main-player').pause();
+    document.getElementById('now-playing').classList.remove('active');
+    currentAudioId = null;
+  }
+  renderManage();
+  renderEpisodes();
+}
+</script>
+</body>
+</html>
