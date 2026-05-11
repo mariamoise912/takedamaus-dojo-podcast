@@ -788,24 +788,41 @@ function renderEpisodes() {
     list.innerHTML = `<div class="empty-state"><div class="icon">🎙️</div><p>Noch keine Folgen vorhanden.<br>Der Trainer wird bald die erste Folge hochladen!</p></div>`;
     return;
   }
-  // Sort newest first
   const sorted = [...eps].sort((a, b) => b.id - a.id);
-  list.innerHTML = sorted.map((ep, i) => `
-    <div class="ep-card ${currentAudioId === ep.id ? 'playing' : ''}" id="epcard-${ep.id}" onclick="playEp(${ep.id})">
-      <div class="ep-num">#${ep.id}</div>
-      <div class="ep-info">
-        <div class="ep-title">${ep.title}</div>
-        <div class="ep-meta">
-          <span>${formatDate(ep.date)}</span>
-          ${ep.desc ? `<span>· ${ep.desc.substring(0,50)}${ep.desc.length>50?'…':''}</span>` : ''}
-          ${i === 0 ? '<span class="badge-new">Neu</span>' : ''}
+  const aikido = sorted.filter(ep => ep.title.toLowerCase().includes('aikido'));
+  const kendo  = sorted.filter(ep => ep.title.toLowerCase().includes('kendo'));
+
+  function epCard(ep, i, isNewest) {
+    return `
+      <div class="ep-card ${currentAudioId === ep.id ? 'playing' : ''}" id="epcard-${ep.id}" onclick="playEp(${ep.id})">
+        <div class="ep-num">#${ep.id}</div>
+        <div class="ep-info">
+          <div class="ep-title">${ep.title}</div>
+          <div class="ep-meta">
+            <span>${formatDate(ep.date)}</span>
+            ${ep.desc ? `<span>· ${ep.desc.substring(0,50)}${ep.desc.length>50?'…':''}</span>` : ''}
+            ${isNewest ? '<span class="badge-new">Neu</span>' : ''}
+          </div>
         </div>
+        <button class="play-icon ${currentAudioId === ep.id ? '' : 'paused'}" id="playbtn-${ep.id}">
+          ${currentAudioId === ep.id ? '⏸' : '▶'}
+        </button>
+      </div>`;
+  }
+
+  const newestId = sorted[0]?.id;
+
+  list.innerHTML = `
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+      <div>
+        <div style="font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:2px; color:var(--red); border-bottom:2px solid var(--red); padding-bottom:8px; margin-bottom:12px;">🥋 Aikido</div>
+        ${aikido.map(ep => epCard(ep, 0, ep.id === newestId)).join('')}
       </div>
-      <button class="play-icon ${currentAudioId === ep.id ? '' : 'paused'}" id="playbtn-${ep.id}">
-        ${currentAudioId === ep.id ? '⏸' : '▶'}
-      </button>
-    </div>
-  `).join('');
+      <div>
+        <div style="font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:2px; color:var(--gold); border-bottom:2px solid var(--gold); padding-bottom:8px; margin-bottom:12px;">⚔️ Kendo</div>
+        ${kendo.map(ep => epCard(ep, 0, ep.id === newestId)).join('')}
+      </div>
+    </div>`;
 }
 
 function playEp(id) {
