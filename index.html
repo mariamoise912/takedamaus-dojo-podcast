@@ -707,6 +707,13 @@ const ALLE_FOLGEN = [
     desc: "",
     date: "2026-06-07",
     url: "Takeda%20Maus%20Aikido%205.mp3"
+  },
+  {
+    id: 11,
+    title: "Takeda Maus – Taiso 1",
+    desc: "",
+    date: "2026-06-21",
+    url: "Takeda%20Maus%20Taiso%201.mp3"
   }// Neue Folge hinzufügen:
   // ,{
   //   id: 4,
@@ -814,6 +821,7 @@ function renderEpisodes() {
     return;
   }
   const sorted = [...eps].sort((a, b) => b.id - a.id);
+  const taiso  = sorted.filter(ep => ep.title.toLowerCase().includes('taiso'));
   const aikido = sorted.filter(ep => ep.title.toLowerCase().includes('aikido'));
   const kendo  = sorted.filter(ep => ep.title.toLowerCase().includes('kendo'));
 
@@ -839,6 +847,10 @@ function renderEpisodes() {
 
   list.innerHTML = `
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+      <div>
+        <div style="font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:2px; color:#4DA6FF; border-bottom:2px solid #4DA6FF; padding-bottom:8px; margin-bottom:12px;">🤸 Taiso</div>
+        ${taiso.map(ep => epCard(ep, 0, ep.id === newestId)).join('')}
+      </div>
       <div>
         <div style="font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:2px; color:var(--red); border-bottom:2px solid var(--red); padding-bottom:8px; margin-bottom:12px;">🥋 Aikido</div>
         ${aikido.map(ep => epCard(ep, 0, ep.id === newestId)).join('')}
