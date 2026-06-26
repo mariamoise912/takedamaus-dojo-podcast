@@ -864,7 +864,7 @@ function renderEpisodes() {
   const newestId = sorted[0]?.id;
 
   list.innerHTML = `
-    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; max-width:900px; margin:0 auto;">
       <div>
         <div style="font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:2px; color:#4DA6FF; border-bottom:2px solid #4DA6FF; padding-bottom:8px; margin-bottom:12px;">🤸 Specials</div>
         ${specials.map(ep => epCard(ep, 0, ep.id === newestId)).join('')}
