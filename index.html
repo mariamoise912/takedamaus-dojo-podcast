@@ -839,10 +839,10 @@ function renderEpisodes() {
     return;
   }
   const sorted = [...eps].sort((a, b) => b.id - a.id);
-  const taiso  = sorted.filter(ep => ep.title.toLowerCase().includes('taiso'));
-  const aikido = sorted.filter(ep => ep.title.toLowerCase().includes('aikido'));
   const kendo  = sorted.filter(ep => ep.title.toLowerCase().includes('kendo'));
-
+  const aikido = sorted.filter(ep => ep.title.toLowerCase().includes('aikido'));
+  const specials  = sorted.filter(ep => ep.title.toLowerCase().includes('specials'));
+  
   function epCard(ep, i, isNewest) {
     return `
       <div class="ep-card ${currentAudioId === ep.id ? 'playing' : ''}" id="epcard-${ep.id}" onclick="playEp(${ep.id})">
@@ -866,8 +866,8 @@ function renderEpisodes() {
   list.innerHTML = `
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
       <div>
-        <div style="font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:2px; color:#4DA6FF; border-bottom:2px solid #4DA6FF; padding-bottom:8px; margin-bottom:12px;">🤸 Taiso</div>
-        ${taiso.map(ep => epCard(ep, 0, ep.id === newestId)).join('')}
+        <div style="font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:2px; color:#4DA6FF; border-bottom:2px solid #4DA6FF; padding-bottom:8px; margin-bottom:12px;">🤸 Specials</div>
+        ${specials.map(ep => epCard(ep, 0, ep.id === newestId)).join('')}
       </div>
       <div>
         <div style="font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:2px; color:var(--red); border-bottom:2px solid var(--red); padding-bottom:8px; margin-bottom:12px;">🥋 Aikido</div>
