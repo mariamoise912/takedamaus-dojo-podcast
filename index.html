@@ -779,13 +779,8 @@ function doLogin() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app-screen').style.display = 'block';
 
-  const badge = document.getElementById('role-badge');
   if (role === 'trainer') {
-    badge.textContent = 'Trainer';
-    badge.classList.add('trainer');
     addTrainerTabs();
-  } else {
-    badge.textContent = 'Eltern';
   }
 
   renderEpisodes();
