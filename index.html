@@ -915,8 +915,7 @@ function renderErwachseneEpisodes() {
 }
 
 function playEp(id) {
-  const eps = getEpisodes();
-  const ep = eps.find(e => e.id === id);
+  const ep = getEpisodes().find(e => e.id === id) || ALLE_FOLGEN_ERWACHSENE.find(e => e.id === id);
   if (!ep) return;
 
   const player = document.getElementById('main-player');
@@ -941,6 +940,7 @@ function playEp(id) {
 
   np.classList.add('active');
   renderEpisodes();
+  renderErwachseneEpisodes();
 }
 
 function formatDate(d) {
