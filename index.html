@@ -844,6 +844,25 @@ function showTab(name, btn) {
   if (name === 'manage') renderManage();
 }
 
+// ERSETZEN DURCH
+function epCard(ep, isNewest) {
+  return `
+    <div class="ep-card ${currentAudioId === ep.id ? 'playing' : ''}" id="epcard-${ep.id}" onclick="playEp(${ep.id})">
+      <div class="ep-num">#${ep.id}</div>
+      <div class="ep-info">
+        <div class="ep-title">${ep.title}</div>
+        <div class="ep-meta">
+          <span>${formatDate(ep.date)}</span>
+          ${ep.desc ? `<span>· ${ep.desc.substring(0,50)}${ep.desc.length>50?'…':''}</span>` : ''}
+          ${isNewest ? '<span class="badge-new">Neu</span>' : ''}
+        </div>
+      </div>
+      <button class="play-icon ${currentAudioId === ep.id ? '' : 'paused'}" id="playbtn-${ep.id}">
+        ${currentAudioId === ep.id ? '⏸' : '▶'}
+      </button>
+    </div>`;
+}
+
 function renderEpisodes() {
   const eps = getEpisodes();
   const list = document.getElementById('episode-list');
@@ -855,40 +874,41 @@ function renderEpisodes() {
   const kendo  = sorted.filter(ep => ep.title.toLowerCase().includes('kendo'));
   const aikido = sorted.filter(ep => ep.title.toLowerCase().includes('aikido'));
   const specials  = sorted.filter(ep => ep.title.toLowerCase().includes('specials'));
-  
-  function epCard(ep, i, isNewest) {
-    return `
-      <div class="ep-card ${currentAudioId === ep.id ? 'playing' : ''}" id="epcard-${ep.id}" onclick="playEp(${ep.id})">
-        <div class="ep-num">#${ep.id}</div>
-        <div class="ep-info">
-          <div class="ep-title">${ep.title}</div>
-          <div class="ep-meta">
-            <span>${formatDate(ep.date)}</span>
-            ${ep.desc ? `<span>· ${ep.desc.substring(0,50)}${ep.desc.length>50?'…':''}</span>` : ''}
-            ${isNewest ? '<span class="badge-new">Neu</span>' : ''}
-          </div>
-        </div>
-        <button class="play-icon ${currentAudioId === ep.id ? '' : 'paused'}" id="playbtn-${ep.id}">
-          ${currentAudioId === ep.id ? '⏸' : '▶'}
-        </button>
-      </div>`;
-  }
-
   const newestId = sorted[0]?.id;
 
   list.innerHTML = `
     <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; max-width:900px; margin:0 auto;">
       <div>
         <div style="font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:2px; color:#4DA6FF; border-bottom:2px solid #4DA6FF; padding-bottom:8px; margin-bottom:12px;">🤸 Specials</div>
-        ${specials.map(ep => epCard(ep, 0, ep.id === newestId)).join('')}
+        ${specials.map(ep => epCard(ep, ep.id === newestId)).join('')}
       </div>
       <div>
         <div style="font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:2px; color:var(--red); border-bottom:2px solid var(--red); padding-bottom:8px; margin-bottom:12px;">🥋 Aikido</div>
-        ${aikido.map(ep => epCard(ep, 0, ep.id === newestId)).join('')}
+        ${aikido.map(ep => epCard(ep, ep.id === newestId)).join('')}
       </div>
       <div>
         <div style="font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:2px; color:var(--gold); border-bottom:2px solid var(--gold); padding-bottom:8px; margin-bottom:12px;">⚔️ Kendo</div>
-        ${kendo.map(ep => epCard(ep, 0, ep.id === newestId)).join('')}
+        ${kendo.map(ep => epCard(ep, ep.id === newestId)).join('')}
+      </div>
+    </div>`;
+}
+
+function renderErwachseneEpisodes() {
+  const list = document.getElementById('episode-list-erwachsene');
+  if (!list) return;
+  if (ALLE_FOLGEN_ERWACHSENE.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="icon">🎙️</div><p>Noch keine Folgen vorhanden.</p></div>`;
+    return;
+  }
+  const sorted = [...ALLE_FOLGEN_ERWACHSENE].sort((a, b) => b.id - a.id);
+  const budocongress = sorted.filter(ep => ep.title.toLowerCase().includes('budocongress'));
+  const newestId = sorted[0]?.id;
+
+  list.innerHTML = `
+    <div style="max-width:900px; margin:0 auto;">
+      <div>
+        <div style="font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:2px; color:#B565F5; border-bottom:2px solid #B565F5; padding-bottom:8px; margin-bottom:12px;">🏆 Budocongress 2026</div>
+        ${budocongress.map(ep => epCard(ep, ep.id === newestId)).join('')}
       </div>
     </div>`;
 }
