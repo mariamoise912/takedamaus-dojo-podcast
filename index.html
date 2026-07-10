@@ -795,6 +795,7 @@ function doLogin() {
   }
 
   renderEpisodes();
+  renderErwachseneEpisodes();
   // Set today's date in date input
   document.getElementById('ep-date-input').value = new Date().toISOString().split('T')[0];
 }
