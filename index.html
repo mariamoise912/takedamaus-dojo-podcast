@@ -851,7 +851,6 @@ function showTab(name, btn) {
   if (name === 'manage') renderManage();
 }
 
-// ERSETZEN DURCH
 function epCard(ep, isNewest) {
   return `
     <div class="ep-card ${currentAudioId === ep.id ? 'playing' : ''}" id="epcard-${ep.id}" onclick="playEp(${ep.id})">
@@ -869,6 +868,15 @@ function epCard(ep, isNewest) {
       </button>
     </div>`;
 }
+
+function renderEpisodes() {
+  const eps = getEpisodes();
+  const list = document.getElementById('episode-list');
+  if (eps.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="icon">🎙️</div><p>Noch keine Folgen vorhanden.<br>Der Trainer wird bald die erste Folge hochladen!</p></div>`;
+    return;
+  }
+  const sorted = [...eps].sort((a, b) => b.id - a.id);
 
 // ERSETZEN DURCH
   const sorted = [...eps].sort((a, b) => b.id - a.id);
