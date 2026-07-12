@@ -875,10 +875,7 @@ function renderEpisodes() {
   if (eps.length === 0) {
     list.innerHTML = `<div class="empty-state"><div class="icon">🎙️</div><p>Noch keine Folgen vorhanden.<br>Der Trainer wird bald die erste Folge hochladen!</p></div>`;
     return;
-  }
-  const sorted = [...eps].sort((a, b) => b.id - a.id);
-
-// ERSETZEN DURCH
+ 
   const sorted = [...eps].sort((a, b) => b.id - a.id);
   const kendo  = sorted.filter(ep => ep.title.toLowerCase().includes('kendo'));
   const aikido = sorted.filter(ep => ep.title.toLowerCase().includes('aikido'));
