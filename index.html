@@ -85,14 +85,16 @@
     margin-bottom: 1.25rem;
     color: var(--text);
   }
-  .field-label {
-    font-size: 0.75rem;
+  .ep-title {
     font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 8px;
-    display: block;
+    font-size: 0.95rem;
+    color: var(--text);
+    margin-bottom: 4px;
+    white-space: normal;
+    overflow-wrap: break-word;
+    line-height: 1.3;
+  }
+
   }
   .field-wrap { margin-bottom: 1.25rem; position: relative; }
   .field-wrap input {
@@ -885,7 +887,7 @@ function renderEpisodes() {
   const newestId = sorted[0]?.id;
 
   list.innerHTML = `
-    <div style="display:grid; grid-template-columns:repeat(4, 260px); gap:16px; justify-content:start; margin:0;">
+    <div style="display:grid; grid-template-columns:repeat(4, 300px); gap:16px; justify-content:start; margin:0;">
       <div>
         <div style="font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:2px; color:#4DA6FF; border-bottom:2px solid #4DA6FF; padding-bottom:8px; margin-bottom:12px;">🤸 Specials</div>
         ${specials.map(ep => epCard(ep, ep.id === newestId)).join('')}
