@@ -860,7 +860,7 @@ function epCard(ep, isNewest) {
     <div class="ep-card ${currentAudioId === ep.id ? 'playing' : ''}" id="epcard-${ep.id}" onclick="playEp(${ep.id})">
       <div class="ep-num">#${ep.id}</div>
       <div class="ep-info">
-        <div class="ep-title">${ep.title}</div>
+        <div class="ep-title">${displayTitle}</div>
         <div class="ep-meta">
           <span>${formatDate(ep.date)}</span>
           ${ep.desc ? `<span>· ${ep.desc.substring(0,50)}${ep.desc.length>50?'…':''}</span>` : ''}
