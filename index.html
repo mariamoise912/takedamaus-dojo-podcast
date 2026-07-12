@@ -864,21 +864,16 @@ function epCard(ep, isNewest) {
     </div>`;
 }
 
-function renderEpisodes() {
-  const eps = getEpisodes();
-  const list = document.getElementById('episode-list');
-  if (eps.length === 0) {
-    list.innerHTML = `<div class="empty-state"><div class="icon">🎙️</div><p>Noch keine Folgen vorhanden.<br>Der Trainer wird bald die erste Folge hochladen!</p></div>`;
-    return;
-  }
+// ERSETZEN DURCH
   const sorted = [...eps].sort((a, b) => b.id - a.id);
   const kendo  = sorted.filter(ep => ep.title.toLowerCase().includes('kendo'));
   const aikido = sorted.filter(ep => ep.title.toLowerCase().includes('aikido'));
   const specials  = sorted.filter(ep => ep.title.toLowerCase().includes('specials'));
+  const geschichten = sorted.filter(ep => ep.title.toLowerCase().includes('geschichte'));
   const newestId = sorted[0]?.id;
 
   list.innerHTML = `
-    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; max-width:900px; margin:0 auto;">
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:16px; max-width:1100px; margin:0 auto;">
       <div>
         <div style="font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:2px; color:#4DA6FF; border-bottom:2px solid #4DA6FF; padding-bottom:8px; margin-bottom:12px;">🤸 Specials</div>
         ${specials.map(ep => epCard(ep, ep.id === newestId)).join('')}
@@ -891,9 +886,13 @@ function renderEpisodes() {
         <div style="font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:2px; color:var(--gold); border-bottom:2px solid var(--gold); padding-bottom:8px; margin-bottom:12px;">⚔️ Kendo</div>
         ${kendo.map(ep => epCard(ep, ep.id === newestId)).join('')}
       </div>
+      <div>
+        <div style="font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:2px; color:#4ADE80; border-bottom:2px solid #4ADE80; padding-bottom:8px; margin-bottom:12px;">📖 Geschichten</div>
+        ${geschichten.map(ep => epCard(ep, ep.id === newestId)).join('')}
+      </div>
     </div>`;
 }
-
+  
 function renderErwachseneEpisodes() {
   const list = document.getElementById('episode-list-erwachsene');
   if (!list) return;
