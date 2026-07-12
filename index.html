@@ -855,6 +855,7 @@ function showTab(name, btn) {
 }
 
 function epCard(ep, isNewest) {
+  const displayTitle = ep.title.replace(/^Takeda Maus\s*[-–]\s*/i, '');
   return `
     <div class="ep-card ${currentAudioId === ep.id ? 'playing' : ''}" id="epcard-${ep.id}" onclick="playEp(${ep.id})">
       <div class="ep-num">#${ep.id}</div>
