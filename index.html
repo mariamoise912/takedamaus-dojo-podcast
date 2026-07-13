@@ -557,10 +557,12 @@
     <div style="text-align:center; margin-bottom:1.5rem;">
       <img src="Takeda%20Kids%20-%20Kopie.gif" alt="Takeda Kids Logo" style="width:200px; border-radius:12px;">
     </div>
+    <div id="now-playing-placeholder">
     <div id="now-playing">
       <div class="np-label">▶ Jetzt läuft</div>
       <div class="np-title" id="np-title">—</div>
       <audio id="main-player" controls></audio>
+    </div>
     </div>
     
 <a href="Takeda%20Maus%20Fragenkatalog%20Aikido%20Kendo.pdf" download 
@@ -593,6 +595,7 @@
   <!-- TAB: Folgen Erwachsene -->
   <div class="tab-content" id="tab-erwachsene">
     <div class="section-title"><span>🎙️</span> Sobukan 15 </div>
+    <div id="now-playing-erwachsene-placeholder"></div>
     <div id="episode-list-erwachsene"></div>
   </div>
 
@@ -950,9 +953,12 @@ function renderErwachseneEpisodes() {
       </div>
     </div>`;
 }
-
+  
 function playEp(id) {
-  const ep = getEpisodes().find(e => e.id === id) || ALLE_FOLGEN_ERWACHSENE.find(e => e.id === id);
+  const isErwachsene = ALLE_FOLGEN_ERWACHSENE.some(e => e.id === id);
+  const ep = isErwachsene
+    ? ALLE_FOLGEN_ERWACHSENE.find(e => e.id === id)
+    : getEpisodes().find(e => e.id === id);
   if (!ep) return;
 
   const player = document.getElementById('main-player');
@@ -975,10 +981,17 @@ function playEp(id) {
     document.getElementById('np-title').textContent = ep.title + ' (kein Audio-Link eingetragen)';
   }
 
+  // Anzeige in den passenden Tab verschieben
+  const targetContainer = isErwachsene
+    ? document.getElementById('now-playing-erwachsene-placeholder')
+    : document.getElementById('now-playing-placeholder');
+  targetContainer.appendChild(np);
+
   np.classList.add('active');
   renderEpisodes();
   renderErwachseneEpisodes();
 }
+
 
 function formatDate(d) {
   if (!d) return '';
