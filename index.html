@@ -525,6 +525,11 @@
     <div class="error-msg" id="error-msg">Falscher Zugangscode. Bitte nochmal versuchen!</div>
 
     <div class="field-wrap">
+      <label class="field-label">E-Mail:</label>
+      <input type="email" id="email-input" placeholder="deine@email.at" autocomplete="off" />
+    </div>
+
+    <div class="field-wrap">
       <label class="field-label">Zugangscode:</label>
       <input type="password" id="code-input" placeholder="z.B. PASSWORD" autocomplete="off" />
     </div>
@@ -825,16 +830,36 @@ function saveEpisodes(eps) {
   // Nicht mehr nötig — Folgen stehen fest im Code
 }
 
+const TRACKING_URL = 'HIER_DEINE_APPS_SCRIPT_URL_EINFÜGEN';
+
 function doLogin() {
+  const email = document.getElementById('email-input').value.trim();
   const code = document.getElementById('code-input').value.trim().toUpperCase();
   const role = PASSWORDS[code];
+
+  if (!email || !email.includes('@')) {
+    document.getElementById('error-msg').textContent = 'Bitte gültige E-Mail-Adresse eingeben.';
+    document.getElementById('error-msg').style.display = 'block';
+    return;
+  }
+
   if (!role) {
+    document.getElementById('error-msg').textContent = 'Falscher Zugangscode. Bitte nochmal versuchen!';
     document.getElementById('error-msg').style.display = 'block';
     const inp = document.getElementById('code-input');
     inp.classList.add('shake');
     setTimeout(() => inp.classList.remove('shake'), 500);
     return;
   }
+
+  // Login tracken (Google Sheet)
+  fetch(TRACKING_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ email: email, role: role })
+  }).catch(() => {});
+
   currentRole = role;
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app-screen').style.display = 'block';
