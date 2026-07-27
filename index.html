@@ -852,13 +852,26 @@ function doLogin() {
     return;
   }
 
-  // Login tracken (Google Sheet)
-  fetch(TRACKING_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ email: email, role: role })
-  }).catch(() => {});
+ // IP-Adresse holen und Login tracken (Google Sheet)
+  fetch('https://api.ipify.org?format=json')
+    .then(res => res.json())
+    .then(ipData => {
+      fetch(TRACKING_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ email: email, role: role, ip: ipData.ip })
+      }).catch(() => {});
+    })
+    .catch(() => {
+      // Falls IP-Abfrage fehlschlägt, trotzdem Login-Daten senden
+      fetch(TRACKING_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ email: email, role: role, ip: 'unbekannt' })
+      }).catch(() => {});
+    });
 
   currentRole = role;
   document.getElementById('login-screen').style.display = 'none';
