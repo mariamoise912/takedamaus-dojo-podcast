@@ -1007,10 +1007,10 @@ function renderProducts() {
       <div class="product-price">€${p.price.toFixed(2)}</div>
       <div class="product-select-row">
         <select id="farbe-${p.id}">
-          ${p.farben.map(f => `<option value="${f}">${f}</option>`).join('')}
+          ${(p.farben || ['Standard']).map(f => `<option value="${f}">${f}</option>`).join('')}
         </select>
         <select id="groesse-${p.id}">
-          ${p.groessen.map(g => `<option value="${g}">${g}</option>`).join('')}
+          ${(p.groessen || ['Einheitsgröße']).map(g => `<option value="${g}">${g}</option>`).join('')}
         </select>
       </div>
       <div class="product-qty-row">
