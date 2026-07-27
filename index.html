@@ -499,6 +499,103 @@
     word-break: break-all;
   }
 
+  /* Goodies Shop */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 1.5rem;
+  }
+  .product-card {
+    background: var(--card);
+    border: 1px solid #2a2a2a;
+    border-radius: var(--radius);
+    padding: 12px;
+    text-align: center;
+  }
+  .product-card img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  .product-name { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
+  .product-price { color: var(--gold); font-weight: 800; font-size: 1rem; margin-bottom: 10px; }
+  .product-select-row { display: flex; gap: 6px; margin-bottom: 8px; }
+  .product-select-row select {
+    flex: 1;
+    background: #111;
+    border: 1.5px solid #2e2e2e;
+    border-radius: 8px;
+    padding: 6px 4px;
+    font-size: 0.78rem;
+    color: var(--text);
+  }
+  .product-qty-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px; }
+  .qty-btn {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 1px solid #333;
+    background: #111;
+    color: var(--text);
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  .qty-btn:hover { border-color: var(--red); color: var(--red); }
+  .qty-val { min-width: 20px; text-align: center; font-weight: 700; }
+  .add-cart-btn {
+    width: 100%;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .add-cart-btn:hover { background: #c0202f; }
+  .cart-box {
+    background: var(--card);
+    border: 1px solid #2a2a2a;
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #2a2a2a;
+    font-size: 0.85rem;
+    gap: 10px;
+  }
+  .cart-item:last-child { border-bottom: none; }
+  .cart-item-info { flex: 1; }
+  .cart-item-sub { font-size: 0.72rem; color: var(--muted); }
+  .cart-remove-btn {
+    background: none;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 4px 8px;
+    color: var(--muted);
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+  .cart-remove-btn:hover { color: var(--red); border-color: var(--red); }
+  .cart-total {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    padding-top: 10px;
+    margin-top: 6px;
+    border-top: 2px solid var(--red);
+  }
+
   /* Mobile bottom padding */
   .tab-content { padding-bottom: 2rem; }
 
@@ -678,15 +775,50 @@
     <div id="manage-list"></div>
   </div>
 
-  <!-- TAB: Info -->
+  <!-- TAB: Info / Goodies -->
   <div class="tab-content" id="tab-info">
-    <div class="section-title"><span>ℹ️</span> Info</div>
+    <div class="section-title"><span>🛒</span> Sobukan Goodies</div>
 
     <div class="info-card">
-      <h3>Sobukan Wien Goodies </h3>
-      <p> T-shirts </p>
+      <h3>🥋 Unser Fan-Shop</h3>
+      <p>Farbe und Größe wählen, Anzahl festlegen, in den Warenkorb legen. Am Ende Formular ausfüllen und bestellen!</p>
     </div>
-    
+
+    <div class="product-grid" id="product-grid"></div>
+
+    <div class="cart-box">
+      <h3 style="font-family:'Bebas Neue',cursive; font-size:1.3rem; letter-spacing:1px; margin-bottom:12px;">🛒 Warenkorb</h3>
+      <div id="cart-items"></div>
+      <div class="cart-total"><span>Gesamt</span><span id="cart-total-price">€0,00</span></div>
+    </div>
+
+    <div class="upload-card">
+      <h3>Bestellung aufgeben</h3>
+      <div class="form-field">
+        <label>Name</label>
+        <input type="text" id="order-name" placeholder="Vor- und Nachname" />
+      </div>
+      <div class="form-field">
+        <label>E-Mail-Adresse</label>
+        <input type="text" id="order-email" placeholder="deine@email.com" />
+      </div>
+      <div class="form-field">
+        <label>Dojo</label>
+        <input type="text" id="order-dojo" placeholder="z.B. Sobukan 15" />
+      </div>
+      <div class="form-field">
+        <label>Sensei</label>
+        <input type="text" id="order-sensei" placeholder="Name deines Sensei" />
+      </div>
+      <div class="form-field">
+        <label>Telefonnummer</label>
+        <input type="text" id="order-phone" placeholder="+43 ..." />
+      </div>
+      <button class="btn-upload" id="order-submit-btn" onclick="submitOrder()">📧 Bestellung absenden</button>
+      <div class="success-toast" id="order-toast">✅ Bestellung wurde übermittelt!</div>
+    </div>
+  </div>
+
 <script>
 // ════════════════════════════════════════
 //   KONFIGURATION — hier anpassen!
@@ -814,6 +946,193 @@ const ALLE_FOLGEN_ERWACHSENE = [
   // weitere Folgen: id ab 102, Titel sollte "Budocongress" enthalten,
   // damit sie automatisch in die Kategorie einsortiert wird
 ];
+
+// ════════════════════════════════════════
+//   GOOGLE SHEET — hier deine Web-App-URL eintragen!
+// ════════════════════════════════════════
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbyaQgk6HDeypO5QXGt0L0DH5b9VpTzS0MhuqiOTR6uH4z5XKJ5AQpjRrmPGtUi2SHjtpw/exec";
+
+// ════════════════════════════════════════
+//   PRODUKTE — hier Produkte eintragen!
+//   Bilder ins Repo hochladen (z.B. Ordner "produkte/")
+// ════════════════════════════════════════
+const PRODUKTE = [
+  {
+    id: 1,
+    name: "Sobukan 15 T-Shirt",
+    price: 20,
+    image: "produkte/tshirt.jpg",
+    groessen: ["XS", "S", "M", "L", "XL", "XXL"],
+    farben: ["Schwarz", "Rot"]
+  },
+  {
+    id: 2,
+    name: "Trainingsanzug",
+    price: 45,
+    image: "produkte/trainingsanzug.jpg",
+    groessen: ["S", "M", "L", "XL"],
+    farben: ["Schwarz"]
+  },
+  {
+    id: 3,
+    name: "Sobukan 15 Aufnäher",
+    price: 8,
+    image: "produkte/aufnaeher.jpg",
+    groessen: ["Einheitsgröße"],
+    farben: ["Rot/Gold"]
+  }
+  // Neues Produkt hinzufügen:
+  // ,{
+  //   id: 4,
+  //   name: "Name des Produkts",
+  //   price: 15,
+  //   image: "produkte/dateiname.jpg",
+  //   groessen: ["S","M","L"],
+  //   farben: ["Schwarz","Weiß"]
+  // }
+];
+
+let cart = {}; // key: "produktId-farbe-groesse" → {produktId, name, farbe, groesse, menge, preis}
+let qtyState = {}; // aktuelle Anzahl-Auswahl pro Produkt, bevor "In den Warenkorb"
+
+function renderProducts() {
+  const grid = document.getElementById('product-grid');
+  if (!grid) return;
+  grid.innerHTML = PRODUKTE.map(p => {
+    if (!(p.id in qtyState)) qtyState[p.id] = 1;
+    return `
+    <div class="product-card">
+      <img src="${p.image}" alt="${p.name}">
+      <div class="product-name">${p.name}</div>
+      <div class="product-price">€${p.price.toFixed(2)}</div>
+      <div class="product-select-row">
+        <select id="farbe-${p.id}">
+          ${p.farben.map(f => `<option value="${f}">${f}</option>`).join('')}
+        </select>
+        <select id="groesse-${p.id}">
+          ${p.groessen.map(g => `<option value="${g}">${g}</option>`).join('')}
+        </select>
+      </div>
+      <div class="product-qty-row">
+        <button class="qty-btn" onclick="changeProductQty(${p.id}, -1)">−</button>
+        <span class="qty-val" id="qty-${p.id}">${qtyState[p.id]}</span>
+        <button class="qty-btn" onclick="changeProductQty(${p.id}, 1)">+</button>
+      </div>
+      <button class="add-cart-btn" onclick="addToCart(${p.id})">🛒 In den Warenkorb</button>
+    </div>`;
+  }).join('');
+}
+
+function changeProductQty(id, delta) {
+  qtyState[id] = Math.max(1, (qtyState[id] || 1) + delta);
+  document.getElementById('qty-' + id).textContent = qtyState[id];
+}
+
+function addToCart(id) {
+  const p = PRODUKTE.find(pr => pr.id === id);
+  const farbe = document.getElementById('farbe-' + id).value;
+  const groesse = document.getElementById('groesse-' + id).value;
+  const menge = qtyState[id] || 1;
+  const key = `${id}-${farbe}-${groesse}`;
+
+  if (cart[key]) {
+    cart[key].menge += menge;
+  } else {
+    cart[key] = { produktId: id, name: p.name, farbe, groesse, menge, preis: p.price };
+  }
+
+  qtyState[id] = 1;
+  document.getElementById('qty-' + id).textContent = 1;
+  renderCart();
+}
+
+function removeFromCart(key) {
+  delete cart[key];
+  renderCart();
+}
+
+function renderCart() {
+  const container = document.getElementById('cart-items');
+  const totalEl = document.getElementById('cart-total-price');
+  if (!container) return;
+  const entries = Object.entries(cart);
+  if (entries.length === 0) {
+    container.innerHTML = '<p style="color: var(--muted); font-size: .85rem;">Noch nichts im Warenkorb.</p>';
+    totalEl.textContent = '€0,00';
+    return;
+  }
+  let total = 0;
+  container.innerHTML = entries.map(([key, item]) => {
+    const subtotal = item.preis * item.menge;
+    total += subtotal;
+    return `
+      <div class="cart-item">
+        <div class="cart-item-info">
+          <div>${item.name} × ${item.menge}</div>
+          <div class="cart-item-sub">${item.farbe} · ${item.groesse}</div>
+        </div>
+        <span>€${subtotal.toFixed(2)}</span>
+        <button class="cart-remove-btn" onclick="removeFromCart('${key}')">🗑</button>
+      </div>`;
+  }).join('');
+  totalEl.textContent = '€' + total.toFixed(2);
+}
+
+function submitOrder() {
+  const name = document.getElementById('order-name').value.trim();
+  const email = document.getElementById('order-email').value.trim();
+  const dojo = document.getElementById('order-dojo').value.trim();
+  const sensei = document.getElementById('order-sensei').value.trim();
+  const phone = document.getElementById('order-phone').value.trim();
+
+  if (!name || !email) {
+    alert('Bitte mindestens Name und E-Mail-Adresse ausfüllen.');
+    return;
+  }
+  if (Object.keys(cart).length === 0) {
+    alert('Dein Warenkorb ist leer.');
+    return;
+  }
+
+  const items = Object.values(cart).map(item => ({
+    name: item.name,
+    farbe: item.farbe,
+    groesse: item.groesse,
+    menge: item.menge,
+    preis: item.preis
+  }));
+
+  const payload = { name, email, dojo, sensei, phone, items };
+
+  const btn = document.getElementById('order-submit-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Wird gesendet...';
+
+  fetch(GOOGLE_SHEET_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(payload)
+  }).then(() => {
+    cart = {};
+    renderCart();
+    document.getElementById('order-name').value = '';
+    document.getElementById('order-email').value = '';
+    document.getElementById('order-dojo').value = '';
+    document.getElementById('order-sensei').value = '';
+    document.getElementById('order-phone').value = '';
+    const toast = document.getElementById('order-toast');
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 4000);
+    btn.disabled = false;
+    btn.textContent = '📧 Bestellung absenden';
+  }).catch(() => {
+    alert('Etwas ist schiefgelaufen. Bitte versuch es nochmal.');
+    btn.disabled = false;
+    btn.textContent = '📧 Bestellung absenden';
+  });
+}
+
 // ════════════════════════════════════════
 //   APP-LOGIK
 // ════════════════════════════════════════
@@ -883,6 +1202,8 @@ function doLogin() {
 
   renderEpisodes();
   renderErwachseneEpisodes();
+  renderProducts();
+  renderCart();
   // Set today's date in date input
   document.getElementById('ep-date-input').value = new Date().toISOString().split('T')[0];
 }
