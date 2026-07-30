@@ -1138,6 +1138,7 @@ function submitOrder() {
 let currentRole = null;
 let currentAudioId = null;
 let audioFile = null;
+let currentUserEmail = null;
 
 // Folgen kommen immer aus dem Code — für alle sichtbar!
 function getEpisodes() {
@@ -1192,6 +1193,7 @@ function doLogin() {
     });
 
   currentRole = role;
+  currentUserEmail = email;
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app-screen').style.display = 'block';
 
@@ -1343,8 +1345,14 @@ function playEp(id) {
     return;
   }
 
-  currentAudioId = id;
+ currentAudioId = id;
   document.getElementById('np-title').textContent = ep.title;
+
+  // Folge-Tracking (Google Sheet)
+  fetch('https://api.ipify.org?format=json')
+    .then(res => res.json())
+    .then(ipData => trackEpisodePlay(ep, ipData.ip))
+    .catch(() => trackEpisodePlay(ep, 'unbekannt'));
 
   if (ep.url && ep.url.trim() !== '') {
     player.src = ep.url;
@@ -1353,7 +1361,6 @@ function playEp(id) {
     player.src = '';
     document.getElementById('np-title').textContent = ep.title + ' (kein Audio-Link eingetragen)';
   }
-
   // Anzeige in den passenden Tab verschieben
   const targetContainer = isErwachsene
     ? document.getElementById('now-playing-erwachsene-placeholder')
@@ -1365,6 +1372,21 @@ function playEp(id) {
   renderErwachseneEpisodes();
 }
 
+
+function trackEpisodePlay(ep, ip) {
+  fetch(TRACKING_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({
+      type: 'episode_play',
+      email: currentUserEmail,
+      ip: ip,
+      episodeId: ep.id,
+      episodeTitle: ep.title
+    })
+  }).catch(() => {});
+}
 
 function formatDate(d) {
   if (!d) return '';
