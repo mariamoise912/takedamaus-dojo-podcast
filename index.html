@@ -962,7 +962,8 @@ const PRODUKTE = [
     price: 33,
     image: "tshirt.png",
     groessen: ["S", "M", "L", "XL", "XXL", "S-women", "M-women", "L-women"],
-    farben: ["Schwarz", "Rot", "Blau", "Weiß", "Grün", "Gelb"]
+    farben: ["Schwarz", "Rot", "Blau", "Weiß", "Grün", "Gelb"],
+    logoFarben: ["Schwarz", "Weiß"]
   },
   {
     id: 2,
@@ -970,7 +971,8 @@ const PRODUKTE = [
     price: 12,
     image: "patch.png",
     groessen: [" "],
-    farben: ["Schwarz"]
+    farben: ["Schwarz"],
+    logoFarben: [" "]
   },
   {
     id: 3,
@@ -978,7 +980,8 @@ const PRODUKTE = [
     price: 13,
     image: "edelstahltasse.png",
     groessen: [" "],
-    farben: ["Metalisch"]
+    farben: ["Metalisch"],
+    logoFarben: [" "]
   }
   // Neues Produkt hinzufügen:
   // ,{
@@ -1005,12 +1008,18 @@ function renderProducts() {
       <div class="product-name">${p.name}</div>
       <div class="product-price">€${p.price.toFixed(2)}</div>
       <div class="product-select-row">
+        ${p.farben ? `
         <select id="farbe-${p.id}">
-          ${(p.farben || ['Standard']).map(f => `<option value="${f}">${f}</option>`).join('')}
-        </select>
+          ${p.farben.map(f => `<option value="${f}">${f}</option>`).join('')}
+        </select>` : ''}
+        ${p.groessen ? `
         <select id="groesse-${p.id}">
-          ${(p.groessen || ['Einheitsgröße']).map(g => `<option value="${g}">${g}</option>`).join('')}
-        </select>
+          ${p.groessen.map(g => `<option value="${g}">${g}</option>`).join('')}
+        </select>` : ''}
+        ${p.logoFarben ? `
+        <select id="logofarbe-${p.id}">
+          ${p.logoFarben.map(l => `<option value="${l}">${l}</option>`).join('')}
+        </select>` : ''}
       </div>
       <div class="product-qty-row">
         <button class="qty-btn" onclick="changeProductQty(${p.id}, -1)">−</button>
@@ -1029,15 +1038,19 @@ function changeProductQty(id, delta) {
 
 function addToCart(id) {
   const p = PRODUKTE.find(pr => pr.id === id);
-  const farbe = document.getElementById('farbe-' + id).value;
-  const groesse = document.getElementById('groesse-' + id).value;
+  const farbeEl = document.getElementById('farbe-' + id);
+  const groesseEl = document.getElementById('groesse-' + id);
+  const logofarbeEl = document.getElementById('logofarbe-' + id);
+  const farbe = farbeEl ? farbeEl.value : null;
+  const groesse = groesseEl ? groesseEl.value : null;
+  const logofarbe = logofarbeEl ? logofarbeEl.value : null;
   const menge = qtyState[id] || 1;
-  const key = `${id}-${farbe}-${groesse}`;
+  const key = `${id}-${farbe}-${groesse}-${logofarbe}`;
 
   if (cart[key]) {
     cart[key].menge += menge;
   } else {
-    cart[key] = { produktId: id, name: p.name, farbe, groesse, menge, preis: p.price };
+    cart[key] = { produktId: id, name: p.name, farbe, groesse, logofarbe, menge, preis: p.price };
   }
 
   qtyState[id] = 1;
@@ -1068,7 +1081,7 @@ function renderCart() {
       <div class="cart-item">
         <div class="cart-item-info">
           <div>${item.name} × ${item.menge}</div>
-          <div class="cart-item-sub">${item.farbe} · ${item.groesse}</div>
+          <div class="cart-item-sub">${[item.farbe, item.groesse, item.logofarbe ? 'Logo: ' + item.logofarbe : null].filter(Boolean).join(' · ')}</div>
         </div>
         <span>€${subtotal.toFixed(2)}</span>
         <button class="cart-remove-btn" onclick="removeFromCart('${key}')">🗑</button>
